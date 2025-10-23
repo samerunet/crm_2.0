@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://farimakeup.com';
+  const base = 'https://sandiego_makeup.com';
   const now = new Date().toISOString();
   const paths = ['', '/services', '/portfolio', '/faq', '/about', '/courses', '/auth/sign-in'];
 

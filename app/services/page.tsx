@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <>
-      <SEOJsonLD canonical="https://farimakeup.com/services" />
+      <SEOJsonLD canonical="https://sandiego_makeup.com/services" />
       <ServicesClient />
     </>
   );

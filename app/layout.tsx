@@ -10,45 +10,67 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
-const SITE_URL = new URL('https://farimakeup.com');
-const SITE_TITLE =
-  'San Diego Makeup * Fari Makeup — Bridal & Luxury Soft Glam in San Diego, OC & LA';
+const SITE_ORIGIN = 'https://sandiego_makeup.com';
+const SITE_URL = new URL(SITE_ORIGIN);
+const SITE_TITLE = 'San Diego Makeup Artist Fari';
 const SITE_DESCRIPTION =
-  'Bridal makeup and modern soft glam across San Diego, Orange County, and Los Angeles. Luxury skin prep, long-lasting looks, on-location service, and a calm, professional experience.';
+  'San Diego-based makeup artist specializing in modern bridal looks and luxury soft glam across Southern California with stress-free, on-location service.';
+const STRUCTURED_DATA = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: SITE_TITLE,
+  url: SITE_ORIGIN,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${SITE_ORIGIN}/favicon.svg`,
+    width: 512,
+    height: 512,
+  },
+  image: `${SITE_ORIGIN}/og.jpg`,
+  areaServed: {
+    '@type': 'City',
+    name: 'San Diego',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'San Diego',
+      addressRegion: 'CA',
+      addressCountry: 'US',
+    },
+  },
+  description: SITE_DESCRIPTION,
+};
 
 export const metadata: Metadata = {
   metadataBase: SITE_URL,
   title: {
     default: SITE_TITLE,
-    template: '%s | Fari Makeup',
+    template: '%s | San Diego Makeup Artist Fari',
   },
   description: SITE_DESCRIPTION,
   alternates: {
-    canonical: 'https://farimakeup.com',
+    canonical: SITE_ORIGIN,
     languages: {
-      'en-US': 'https://farimakeup.com',
+      'en-US': SITE_ORIGIN,
     },
   },
-  applicationName: 'Fari Makeup',
-  authors: [{ name: 'Fari Makeup' }],
-  creator: 'Fari Makeup',
-  publisher: 'Fari Makeup',
+  applicationName: SITE_TITLE,
+  authors: [{ name: SITE_TITLE }],
+  creator: SITE_TITLE,
+  publisher: SITE_TITLE,
   keywords: [
-    'Fari Makeup',
-    'Fariia Makeup',
-    'bridal makeup',
-    'soft glam',
-    'natural makeup',
-    'luxury makeup',
-    'wedding makeup artist',
-    'San Diego',
-    'Orange County',
-    'Los Angeles',
+    'San Diego makeup artist',
+    'Fari makeup artist',
+    'bridal makeup San Diego',
+    'soft glam makeup',
+    'natural wedding makeup',
+    'luxury makeup San Diego',
+    'destination wedding makeup',
+    'Southern California makeup artist',
   ],
   openGraph: {
     type: 'website',
-    url: 'https://farimakeup.com',
-    siteName: 'Fari Makeup',
+    url: SITE_ORIGIN,
+    siteName: SITE_TITLE,
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     images: [
@@ -95,6 +117,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           imageSizes="100vw"
           fetchPriority="high"
         />
+        <Script id="ld-json" type="application/ld+json" strategy="beforeInteractive">
+          {JSON.stringify(STRUCTURED_DATA)}
+        </Script>
       </head>
       <body className={inter.className}>
         <Script

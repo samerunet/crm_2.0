@@ -1,29 +1,40 @@
 'use client';
 import React from 'react';
 
-export default function SEOJsonLD({ canonical = 'https://farimakeup.com' }: { canonical?: string }) {
+const DEFAULT_CANONICAL = 'https://sandiego_makeup.com';
+
+export default function SEOJsonLD({ canonical = DEFAULT_CANONICAL }: { canonical?: string }) {
+  const canonicalUrl = new URL(canonical);
+  const origin = canonicalUrl.origin;
+
   const org = {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Fari Makeup',
-    url: canonical,
-    logo: `${canonical}/favicon.svg`,
+    '@type': 'ProfessionalService',
+    name: 'San Diego Makeup Artist Fari',
+    url: origin,
+    logo: `${origin}/favicon.svg`,
+    image: `${origin}/og.jpg`,
   };
 
   const service = {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
-    name: 'Fari Makeup',
+    name: 'San Diego Makeup Artist Fari',
     url: canonical,
-    image: `${canonical}/og.jpg`,
+    image: `${origin}/og.jpg`,
     areaServed: [
       { '@type': 'City', name: 'San Diego' },
+      { '@type': 'City', name: 'La Jolla' },
       { '@type': 'City', name: 'Orange County' },
       { '@type': 'City', name: 'Los Angeles' },
     ],
     description:
-      'Bridal makeup and modern soft glam across San Diego, Orange County, and Los Angeles. Luxury skin prep, long-lasting looks, on-location service, and a calm, professional experience.',
-    availableChannel: { '@type': 'ServiceChannel', serviceUrl: `${canonical}/services` },
+      'San Diego makeup artist delivering modern bridal looks, luxury soft glam, and stress-free on-location service throughout Southern California.',
+    availableChannel: { '@type': 'ServiceChannel', serviceUrl: `${origin}/services` },
+    provider: {
+      '@type': 'Person',
+      name: 'Fari',
+    },
   };
 
   return (
