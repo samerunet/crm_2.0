@@ -1,0 +1,199 @@
+/* FILE: app/globals.css */
+@import "tailwindcss";
+
+/* Enable `.dark` variant like Tailwind/shadcn v4 expect */
+@custom-variant dark (&:is(.dark *));
+
+/* === 1) Palette (unchanged names, slightly deeper bg for contrast) === */
+:root{
+  --background:#8F7353;         /* darker than #B2997A so glass pops */
+  --foreground:#120D0A;
+
+  --card:#C7B39C;                /* surfaces */
+  --card-foreground:#120D0A;
+
+  --popover:#CBB9A4;
+  --popover-foreground:#120D0A;
+
+  --primary:#6C3A22;
+  --primary-foreground:#FFFFFF;
+
+  --secondary:#9D7E60;
+  --secondary-foreground:#120D0A;
+
+  --muted:#BCA78D;
+  --muted-foreground:#523620;
+
+  --accent:#8B6547;
+  --accent-foreground:#120D0A;
+
+  --destructive:#5A3725;
+  --destructive-foreground:#FFFFFF;
+
+  --border:#8A6E4D;
+  --input:#8A6E4D;
+  --ring:#8B6547;
+
+  --chart-1:#6C3A22; --chart-2:#8B6547; --chart-3:#5A3725; --chart-4:#9D7E60; --chart-5:#C7B39C;
+  --radius:10px;
+
+  /* CRM helpers */
+  --gold:#C6A25A; --espresso:#2C1B12; --sage:#008767; --teal:#0f766e; --amber:#b45309;
+
+  /* Liquid glass tuning */
+  --lg-blur:26px;   /* blur strength */
+  --lg-sat:125%;    /* saturation pop */
+  --lg-contrast:102%;
+}
+.dark{
+  --background:#11100F;
+  --foreground:#F4EADD;
+
+  --card:#2A201A; --card-foreground:#F4EADD;
+  --popover:#2A201A; --popover-foreground:#F4EADD;
+
+  --primary:#B08968; --primary-foreground:#11100F;
+  --secondary:#1B1512; --secondary-foreground:#F4EADD;
+  --muted:#1B1512; --muted-foreground:#D3BFA5;
+  --accent:#9C6644; --accent-foreground:#11100F;
+  --destructive:#7F5539; --destructive-foreground:#F4EADD;
+  --border:#7F5539; --input:#7F5539; --ring:#B08968;
+
+  --lg-blur:24px; --lg-sat:120%; --lg-contrast:100%;
+}
+
+/* === 2) Map CSS vars -> Tailwind tokens (kept) === */
+@theme inline{
+  --color-background:var(--background);
+  --color-foreground:var(--foreground);
+  --color-card:var(--card); --color-card-foreground:var(--card-foreground);
+  --color-popover:var(--popover); --color-popover-foreground:var(--popover-foreground);
+  --color-primary:var(--primary); --color-primary-foreground:var(--primary-foreground);
+  --color-secondary:var(--secondary); --color-secondary-foreground:var(--secondary-foreground);
+  --color-muted:var(--muted); --color-muted-foreground:var(--muted-foreground);
+  --color-accent:var(--accent); --color-accent-foreground:var(--accent-foreground);
+  --color-destructive:var(--destructive); --color-destructive-foreground:var(--destructive-foreground);
+  --color-border:var(--border); --color-input:var(--input); --color-ring:var(--ring);
+  --color-chart-1:var(--chart-1); --color-chart-2:var(--chart-2); --color-chart-3:var(--chart-3);
+  --color-chart-4:var(--chart-4); --color-chart-5:var(--chart-5);
+
+  --radius-sm:calc(var(--radius) - 4px);
+  --radius-md:calc(var(--radius) - 2px);
+  --radius-lg:var(--radius);
+  --radius-xl:calc(var(--radius) + 4px);
+}
+
+/* === 3) Base === */
+@layer base{
+  *{ @apply border-border outline-ring/50; }
+  body{ @apply bg-background text-foreground; }
+}
+
+/* Subtle page vignette so glass lifts off background */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(0,0,0,.00), rgba(0,0,0,.00) 40%, rgba(0,0,0,.05) 80%),
+    radial-gradient(120% 80% at 50% 110%, rgba(0,0,0,.00), rgba(0,0,0,.00) 40%, rgba(0,0,0,.06) 85%);
+}
+
+/* === 4) Liquid Glass (simplified, stronger, Safari-proof) === */
+.glass,
+.glass-2,
+.glass-strong{
+  position:relative; overflow:hidden; color:var(--foreground);
+  /* Visible in every browser first (RGBA), then enhanced by backdrop-filter */
+  border:1px solid rgba(138,110,77,.72);
+  box-shadow:0 18px 48px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.05);
+  -webkit-backdrop-filter:blur(var(--lg-blur)) saturate(var(--lg-sat)) contrast(var(--lg-contrast));
+  backdrop-filter:blur(var(--lg-blur)) saturate(var(--lg-sat)) contrast(var(--lg-contrast));
+}
+
+/* Base glass (cards/surfaces) */
+.glass{ background:rgba(199,179,156,.70); }     /* #C7B39C @ 70% */
+.glass-2{ background:rgba(178,153,122,.46); }   /* lighter */
+.glass-strong{ background:rgba(203,185,164,.92);}/* nav/drawer */
+
+/* Specular highlight */
+.glass::before,.glass-2::before,.glass-strong::before{
+  content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 45%) top/100% 55% no-repeat,
+    radial-gradient(120% 70% at 10% -10%, rgba(255,255,255,.14), transparent 60%);
+  mix-blend-mode:screen; opacity:.6;
+}
+
+/* === 5) Buttons & chips === */
+.gbtn{
+  position:relative;
+  background:rgba(108,58,34,.94); color:var(--primary-foreground);
+  border:1px solid rgba(139,101,71,.68);
+  -webkit-backdrop-filter:blur(14px) saturate(120%); backdrop-filter:blur(14px) saturate(120%);
+  box-shadow:0 1px 0 rgba(255,255,255,.12) inset, 0 10px 28px rgba(0,0,0,.18);
+}
+.gbtn::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 45%);
+  mix-blend-mode:screen; opacity:.65;
+}
+
+.icon-chip{
+  background:rgba(18,13,10,.16);
+  color:var(--foreground);
+  border:1px solid rgba(138,110,77,.68);
+  -webkit-backdrop-filter:blur(12px) saturate(120%); backdrop-filter:blur(12px) saturate(120%);
+  box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+
+/* === 6) Layout helpers === */
+.f-container{ width:100%; max-width:86rem; margin-inline:auto; padding-inline:1rem; }
+@media (min-width:640px){ .f-container{ padding-inline:1.5rem; } }
+.section-y{ padding-block:2rem; }
+@media (min-width:768px){ .section-y{ padding-block:3rem; } }
+
+button{ transition:background-color .15s ease, color .15s ease, border-color .15s ease; }
+.year-day{ border-radius:.5rem; }
+
+/* === 7) Mobile drawer (solid & readable) === */
+.nav-drawer{
+  background:rgba(203,185,164,.96) !important;
+  color:#120D0A !important; border-left:1px solid var(--border) !important;
+  -webkit-backdrop-filter:blur(26px) saturate(125%) !important;
+  backdrop-filter:blur(26px) saturate(125%) !important;
+  box-shadow:0 22px 70px rgba(0,0,0,.28) !important; z-index:9999 !important;
+}
+.nav-drawer a,.nav-drawer button{ color:#120D0A !important; }
+.nav-drawer .is-active{ background:rgba(108,58,34,.18) !important; border:1px solid rgba(138,110,77,.75) !important; }
+.nav-drawer .hoverable:hover{ background:rgba(139,101,71,.22) !important; }
+/* === White Glass Utilities (append at end of app/globals.css) === */
+.wglass {
+  /* ~90% transparent white */
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.22);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  backdrop-filter: blur(18px) saturate(120%);
+  box-shadow: 0 10px 40px rgba(0,0,0,.18);
+}
+.wglass-strong {
+  /* a touch more opacity for nav/shelves */
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.28);
+  -webkit-backdrop-filter: blur(20px) saturate(125%);
+  backdrop-filter: blur(20px) saturate(125%);
+  box-shadow: 0 16px 54px rgba(0,0,0,.20);
+}
+/* Side shadow (right) for that lifted shelf look */
+.side-shadow-right {
+  box-shadow:
+    14px 0 36px rgba(0,0,0,.16),
+    0 10px 40px rgba(0,0,0,.12);
+}
+/* Shared rounded + padding helpers (optional) */
+.panel {
+  border-radius: 16px;
+  padding: 0.75rem;
+}
+.panel-lg {
+  border-radius: 20px;
+  padding: 1rem;
+}
