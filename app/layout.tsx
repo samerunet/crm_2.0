@@ -6,11 +6,12 @@ import './globals.css';
 import AppProviders from '@/components/ui/app-providers';
 import Navbar from '@/components/ui/navbar';
 import Footer from '@/components/ui/footer';
+import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
-const SITE_ORIGIN = 'https://sandiego_makeup.com';
+const SITE_ORIGIN = 'https://www.sandiego-makeup.com';
 const SITE_URL = new URL(SITE_ORIGIN);
 const SITE_TITLE = 'San Diego Makeup Artist Fari';
 const SITE_DESCRIPTION =
@@ -140,6 +141,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Footer />
         </AppProviders>
+        <Analytics />
         <SpeedInsights />
       </body>
     </html>

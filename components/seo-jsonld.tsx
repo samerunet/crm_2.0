@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-const DEFAULT_CANONICAL = 'https://sandiego_makeup.com';
+const DEFAULT_CANONICAL = 'https://www.sandiego-makeup.com';
 
 export default function SEOJsonLD({ canonical = DEFAULT_CANONICAL }: { canonical?: string }) {
   const canonicalUrl = new URL(canonical);

@@ -48,7 +48,8 @@ function MobileDrawer({
         }}
       />
       <aside
-        role="menu"
+        role="dialog"
+        aria-modal="true"
         aria-labelledby={labelId}
         style={{
           position: 'fixed',
@@ -96,9 +97,12 @@ function MobileDrawer({
           </button>
         </div>
 
-        <div style={{ padding: '0.75rem', display: 'grid', gap: '0.25rem', flex: 1, overflowY: 'auto' }}>
+        <nav
+          aria-label="Mobile primary navigation"
+          style={{ padding: '0.75rem', display: 'grid', gap: '0.25rem', flex: 1, overflowY: 'auto' }}
+        >
           {children}
-        </div>
+        </nav>
       </aside>
     </>,
     document.body
