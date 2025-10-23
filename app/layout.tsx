@@ -9,6 +9,7 @@ import Footer from '@/components/ui/footer';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
+import { buildStructuredData } from '@/lib/structured-data';
 
 const inter = Inter({ subsets: ['latin'] });
 const SITE_ORIGIN = 'https://www.sandiego-makeup.com';
@@ -16,30 +17,12 @@ const SITE_URL = new URL(SITE_ORIGIN);
 const SITE_TITLE = 'San Diego Makeup Artist Fari';
 const SITE_DESCRIPTION =
   'San Diego-based makeup artist specializing in modern bridal looks and luxury soft glam across Southern California with stress-free, on-location service.';
-const STRUCTURED_DATA = {
-  '@context': 'https://schema.org',
-  '@type': 'ProfessionalService',
+const STRUCTURED_DATA = buildStructuredData({
+  origin: SITE_ORIGIN,
+  canonical: SITE_ORIGIN,
   name: SITE_TITLE,
-  url: SITE_ORIGIN,
-  logo: {
-    '@type': 'ImageObject',
-    url: `${SITE_ORIGIN}/favicon.svg`,
-    width: 512,
-    height: 512,
-  },
-  image: `${SITE_ORIGIN}/og.jpg`,
-  areaServed: {
-    '@type': 'City',
-    name: 'San Diego',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'San Diego',
-      addressRegion: 'CA',
-      addressCountry: 'US',
-    },
-  },
   description: SITE_DESCRIPTION,
-};
+});
 
 export const metadata: Metadata = {
   metadataBase: SITE_URL,
