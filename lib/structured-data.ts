@@ -107,16 +107,16 @@ export function buildStructuredData({
     priceRange: '$$ - $$$',
     address: postalAddress,
     areaServed,
-    serviceType: ['Bridal makeup', 'Soft glam makeup', 'Beauty lessons', 'Editorial makeup'],
+    serviceType: ['Bridal makeup', 'Soft glam makeup', 'Beauty lessons', 'Editorial makeup', 'San Diego Makeup', 'Makeup'],
     knowsAbout,
     sameAs,
     offers,
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: '5',
-      reviewCount: 42,
-      ratingCount: 42,
+      reviewCount: 12,
       bestRating: '5',
+      worstRating: '1',
     },
     availableChannel: {
       '@type': 'ServiceChannel',
@@ -131,23 +131,32 @@ export function buildStructuredData({
       areaServed: ['San Diego County', 'Orange County', 'Los Angeles County'],
       availableLanguage: ['English'],
     },
-    review: {
-      '@type': 'Review',
-      name: 'Client Testimonials',
-      reviewBody:
-        'Clients praise the calm, professional experience and long-lasting bridal makeup looks.',
-      datePublished: '2024-05-12',
-      reviewRating: {
-        '@type': 'Rating',
-        ratingValue: '5',
-        bestRating: '5',
+    review: [
+      {
+        '@type': 'Review',
+        name: 'Client Testimonials – Luxury Bridal Makeup',
+        reviewBody:
+          'Clients praise the calm, professional experience and long-lasting bridal makeup looks.',
+        datePublished: '2024-05-12',
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: '5',
+          bestRating: '5',
+          worstRating: '1',
+        },
+        author: {
+          '@type': 'Person',
+          name: 'Verified bridal client',
+        },
+        itemReviewed: { '@id': professionalServiceId },
+        publisher: {
+          '@type': 'Organization',
+          name,
+          url: originUrl,
+        },
+        url: reviewsPage,
       },
-      author: {
-        '@type': 'Person',
-        name: 'Verified bridal client',
-      },
-      url: reviewsPage,
-    },
+    ],
   };
 
   const artist = {
