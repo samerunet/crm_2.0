@@ -2,7 +2,7 @@
 import React from 'react';
 import { buildStructuredData } from '@/lib/structured-data';
 
-const DEFAULT_CANONICAL = 'https://www.sandiego-makeup.com';
+const DEFAULT_CANONICAL = 'https://sandiego-makeup.com';
 const SITE_TITLE = 'San Diego Makeup Artist Fari';
 const SITE_DESCRIPTION =
   'San Diego-based makeup artist specializing in modern bridal looks and luxury soft glam across Southern California with stress-free, on-location service.';

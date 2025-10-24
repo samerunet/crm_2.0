@@ -12,7 +12,7 @@ import Script from 'next/script';
 import { buildStructuredData } from '@/lib/structured-data';
 
 const inter = Inter({ subsets: ['latin'] });
-const SITE_ORIGIN = 'https://www.sandiego-makeup.com';
+const SITE_ORIGIN = 'https://sandiego-makeup.com';
 const SITE_URL = new URL(SITE_ORIGIN);
 const SITE_TITLE = 'San Diego Makeup Artist Fari';
 const SITE_DESCRIPTION =
