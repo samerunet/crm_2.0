@@ -229,6 +229,7 @@ export default function BookingModal({
           addOns: selAddOns,
           notes: notes.trim() || undefined, // keep for your records
           message: notes.trim() || undefined, // map to `message` for server validation
+          source: 'booking-modal',
         }),
       });
       const json = await res.json().catch(() => ({}));
@@ -885,5 +886,4 @@ function Row({ label, value, full = false }: { label: string; value: string; ful
     </div>
   );
 }
-
 

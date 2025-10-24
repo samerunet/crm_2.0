@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 // Force IPv4 DNS resolution in Node (fixes local fetch/cert oddities)
 import dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
+import { prisma } from '@/lib/prisma-node';
 
 export const runtime = 'nodejs';
 
@@ -41,8 +42,15 @@ function buildHtml(payload: {
 	phone?: string;
 	topic?: string;
 	message?: string;
+	service?: string;
+	eventDate?: string;
+	location?: string;
+	time?: string;
+	partySize?: number;
+	addOns?: string[];
 }) {
-	const { name, email, phone, topic, message } = payload;
+	const { name, email, phone, topic, message, service, eventDate, location, time, partySize, addOns } =
+		payload;
 	return `
     <div style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial">
       <h2 style="margin:0 0 8px">New website inquiry</h2>
@@ -51,6 +59,20 @@ function buildHtml(payload: {
         <tr><td><strong>Email:</strong></td><td>${email || ""}</td></tr>
         <tr><td><strong>Phone:</strong></td><td>${phone || ""}</td></tr>
         <tr><td><strong>Topic:</strong></td><td>${topic || ""}</td></tr>
+        ${service ? `<tr><td><strong>Service:</strong></td><td>${service}</td></tr>` : ""}
+        ${eventDate ? `<tr><td><strong>Date:</strong></td><td>${eventDate}</td></tr>` : ""}
+        ${time ? `<tr><td><strong>Time:</strong></td><td>${time}</td></tr>` : ""}
+        ${location ? `<tr><td><strong>Location:</strong></td><td>${location}</td></tr>` : ""}
+        ${
+					typeof partySize === "number"
+						? `<tr><td><strong>Party Size:</strong></td><td>${partySize}</td></tr>`
+						: ""
+				}
+        ${
+					addOns?.length
+						? `<tr><td><strong>Add-ons:</strong></td><td>${addOns.join(", ")}</td></tr>`
+						: ""
+				}
       </table>
       <hr style="margin:12px 0;border:none;border-top:1px solid #e5e7eb" />
       <div style="white-space:pre-wrap">${(message || "").replace(/</g, "&lt;")}</div>
@@ -141,6 +163,22 @@ export async function POST(req: NextRequest) {
 	const phone = sanitize(body.phone);
 	const topic = sanitize(body.topic);
 	const message = sanitize(body.message);
+	const service = sanitize(body.service);
+	const location = sanitize(body.location);
+	const time = sanitize(body.time);
+	const dateStr = sanitize(body.date);
+	const partySize =
+		typeof body.partySize === "number"
+			? Math.max(1, Math.min(99, Math.round(body.partySize)))
+			: undefined;
+	const addOns = Array.isArray(body.addOns)
+		? body.addOns
+				.filter((item: unknown): item is string => typeof item === "string")
+				.map((item) => sanitize(item))
+				.filter((item): item is string => !!item)
+				.slice(0, 10)
+		: undefined;
+	const source = sanitize(body.source) || "booking-modal";
 
 	if (!name || !message) {
 		return json(
@@ -150,13 +188,52 @@ export async function POST(req: NextRequest) {
 	}
 
 	try {
+		const eventDate =
+			dateStr && !Number.isNaN(new Date(dateStr).getTime())
+				? new Date(dateStr)
+				: undefined;
+		const detailLines = [
+			service ? `Service: ${service}` : "",
+			dateStr ? `Preferred date: ${dateStr}` : "",
+			time ? `Event time: ${time}` : "",
+			location ? `Location: ${location}` : "",
+			typeof partySize === "number" ? `Party size: ${partySize}` : "",
+			addOns?.length ? `Add-ons: ${addOns.join(", ")}` : "",
+			phone ? `Phone: ${phone}` : "",
+			email ? `Email: ${email}` : "",
+		].filter(Boolean);
+		const combinedMessage = [message, detailLines.join("\n")].filter(Boolean).join("\n\n");
+
+		const lead = await prisma.lead.create({
+			data: {
+				name,
+				email: email || "no-email@placeholder.invalid",
+				phone: phone || null,
+				eventDate,
+				message: combinedMessage || message,
+				source,
+			},
+		});
+
 		const { from, to } = getFromTo();
 		const res = await resend.emails.send({
 			from,
 			to: [to],
-			subject: `Website Inquiry — ${topic || "General"}`,
+			subject: `Website Inquiry — ${topic || service || "General"}`,
 			reply_to: email || undefined,
-			html: buildHtml({ name, email, phone, topic, message }),
+			html: buildHtml({
+				name,
+				email,
+				phone,
+				topic: topic || service,
+				message: combinedMessage || message,
+				service,
+				eventDate: dateStr,
+				location,
+				time,
+				partySize,
+				addOns,
+			}),
 		});
 
 		if ("error" in res && res.error) {
@@ -166,7 +243,11 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
-		return json({ ok: true, id: (res as any).data?.id || null });
+		return json({
+			ok: true,
+			id: (res as any).data?.id || null,
+			leadId: lead.id,
+		});
 	} catch (e: any) {
 		return json(
 			{ ok: false, error: e?.message || "Send failed" },
