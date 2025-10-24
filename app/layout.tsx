@@ -10,6 +10,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
 import { buildStructuredData } from '@/lib/structured-data';
+import { auth } from '@/lib/auth';
 
 const inter = Inter({ subsets: ['latin'] });
 const SITE_ORIGIN = 'https://sandiego-makeup.com';
@@ -89,18 +90,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+
   return (
     <html lang="en" data-theme="fari-light">
       <head>
-        <link
-          rel="preload"
-          as="image"
-          href="/portfolio/12.JPG"
-          // mobile first sizing hint keeps preload effective on all breakpoints
-          imageSizes="100vw"
-          fetchPriority="high"
-        />
         <Script id="ld-json" type="application/ld+json" strategy="beforeInteractive">
           {JSON.stringify(STRUCTURED_DATA)}
         </Script>
@@ -119,7 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('config', 'G-54ESDKQQKV');
           `}
         </Script>
-        <AppProviders>
+        <AppProviders session={session}>
           <Navbar />
           {children}
           <Footer />

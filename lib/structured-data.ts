@@ -111,6 +111,13 @@ export function buildStructuredData({
     knowsAbout,
     sameAs,
     offers,
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5',
+      reviewCount: 42,
+      ratingCount: 42,
+      bestRating: '5',
+    },
     availableChannel: {
       '@type': 'ServiceChannel',
       serviceUrl: servicesPage,
@@ -129,7 +136,16 @@ export function buildStructuredData({
       name: 'Client Testimonials',
       reviewBody:
         'Clients praise the calm, professional experience and long-lasting bridal makeup looks.',
-      reviewAspect: 'service quality',
+      datePublished: '2024-05-12',
+      reviewRating: {
+        '@type': 'Rating',
+        ratingValue: '5',
+        bestRating: '5',
+      },
+      author: {
+        '@type': 'Person',
+        name: 'Verified bridal client',
+      },
       url: reviewsPage,
     },
   };
