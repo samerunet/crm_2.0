@@ -9,7 +9,6 @@ import Footer from '@/components/ui/footer';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
-import { buildStructuredData } from '@/lib/structured-data';
 import { auth } from '@/lib/auth';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -18,12 +17,6 @@ const SITE_URL = new URL(SITE_ORIGIN);
 const SITE_TITLE = 'San Diego Makeup Artist Fari';
 const SITE_DESCRIPTION =
   'San Diego-based makeup artist specializing in modern bridal looks and luxury soft glam across Southern California with stress-free, on-location service.';
-const STRUCTURED_DATA = buildStructuredData({
-  origin: SITE_ORIGIN,
-  canonical: SITE_ORIGIN,
-  name: SITE_TITLE,
-  description: SITE_DESCRIPTION,
-});
 
 export const metadata: Metadata = {
   metadataBase: SITE_URL,
@@ -95,11 +88,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" data-theme="fari-light">
-      <head>
-        <Script id="ld-json" type="application/ld+json" strategy="beforeInteractive">
-          {JSON.stringify(STRUCTURED_DATA)}
-        </Script>
-      </head>
+      <head />
       <body className={inter.className}>
         <Script
           async
